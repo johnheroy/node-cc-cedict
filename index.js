@@ -1,8 +1,9 @@
 var _ = require('underscore');
+var path = require('path');
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
-  storage: './db/cc-cedict.sqlite'
+  storage: path.join(__dirname, './db/cc-cedict.sqlite')
 });
 
 var Word = sequelize.define('Word', {
