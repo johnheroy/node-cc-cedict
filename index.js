@@ -83,13 +83,13 @@ module.exports.searchByPinyin = function(str, cb) {
 			
 			_.each(words, function(word) {
 				var pronunciation = word.pronunciation;
-        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
-        results.push({
-          traditional: word.traditional,
-          simplified: word.simplified,
-          pronunciation: prettified,
-          definitions: word.definitions
-        });
+			        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
+			        results.push({
+			          traditional: word.traditional,
+			          simplified: word.simplified,
+			          pronunciation: prettified,
+			          definitions: word.definitions
+			        });
 			});
 			cb(results);
 	});
