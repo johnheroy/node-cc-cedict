@@ -20,5 +20,23 @@ describe('Search CC-CEDICT', function(){
     });
 
   });
+	
+	describe("Search by Pinyin", function() {
+		
+		it("should search by ugly pinyin and return dictionary entry", function(done) {
+			cedict.searchByPinyin("qin1 qi5", function(words) {
+				assert.equal(words.length, 1);
+				done();
+			});
+		});
+		
+		it("should search by ugly pinyin and detect dead tones without number and return dictionary entry", function(done) {
+			cedict.searchByPinyin("qin1 qi", function(words) {
+				assert.equal(words.length, 1);
+				done();
+			});
+		});
+		
+	});
 
 });
