@@ -62,6 +62,12 @@ module.exports.searchByPinyin = function(str, cb) {
 	_.each(parts, function(part) {
 		var numeric = part.replace(/\D/g,'');
 		
+		// Convert ü to u: as used in dictionary
+		if (part === "ü") {
+			newStr.push("u");
+			newStr.push(":");
+		}
+		
 		if (numeric === "") {
 			part += "5";
 			newStr.push(part);
@@ -77,21 +83,21 @@ module.exports.searchByPinyin = function(str, cb) {
 	};
 	
 	Word
-		.findAll(query)
-		.then(function(words) {
-			var results = [];
-			
-			_.each(words, function(word) {
-				var pronunciation = word.pronunciation;
-			        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
-			        results.push({
-			          traditional: word.traditional,
-			          simplified: word.simplified,
-			          pronunciation: prettified,
-			          definitions: word.definitions
-			        });
-			});
-			cb(results);
+	.findAll(query)
+	.then(function(words) {
+		var results = [];
+		
+		_.each(words, function(word) {
+			var pronunciation = word.pronunciation;
+		        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
+		        results.push({
+		          traditional: word.traditional,
+		          simplified: word.simplified,
+		          pronunciation: prettified,
+		          definitions: word.definitions
+		        });
+		});
+		cb(results);
 	});
 }
 
