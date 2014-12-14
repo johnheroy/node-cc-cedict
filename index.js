@@ -62,16 +62,25 @@ module.exports.searchByPinyin = function(str, cb) {
 	_.each(parts, function(part) {
 		var numeric = part.replace(/\D/g,'');
 		
-		// Convert ü to u: as used in dictionary
-		if (part === "ü") {
-			newStr.push("u");
-			newStr.push(":");
-		}
+		// Convert ü/v to u: as used in dictionary
+		var newPart = [];
+		var umlat = false;
+		_.each(part.split(""), function(char) {
+			if (char === "ü" || char === "v") {
+				newPart.push("u");
+				newPart.push(":");
+				umlat = true;
+			} else {
+				newPart.push(char);
+			}
+		});
+		if (umlat)
+			newStr.push(newPart.join(""));
 		
 		if (numeric === "") {
 			part += "5";
 			newStr.push(part);
-		} else {
+		} else if (!umlat) {
 			newStr.push(part);
 		}
 	});

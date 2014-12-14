@@ -39,12 +39,12 @@ describe('Search CC-CEDICT', function(){
 		
 		it("should search by ugly pinyin and detect ü/v and convert correctly then return dictionary entry", function(done) {
 			cedict.searchByPinyin("nü3", function(words) {
-				assert.equal(words.length, 1);
+				assert.equal(words.length, 3);
 				done();
 			});
 			
 			cedict.searchByPinyin("nv3", function(words) {
-				assert.equal(words.length, 1);
+				assert.equal(words.length, 3);
 				done();
 			});
 		});
