@@ -3,7 +3,8 @@ var path = require('path');
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
-  storage: path.join(__dirname, './db/cc-cedict.sqlite')
+  storage: path.join(__dirname, './db/cc-cedict.sqlite'),
+	logging: false
 });
 
 var Word = sequelize.define('Word', {
