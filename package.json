@@ -31,7 +31,7 @@
   "dependencies": {
     "cn-chars": "0.1.x",
     "prettify-pinyin": "0.1.x",
-    "sequelize": "^2.0.0-rc1",
+    "sequelize": "^2.0.0-rc6",
     "sqlite3": "^3.0.2",
     "underscore": "^1.7.0"
   }
