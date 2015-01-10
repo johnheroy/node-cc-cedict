@@ -2,77 +2,59 @@
 // CC-CEDICT version as of October 6, 2014
 // see ../src/cc-cedict.txt for more details
 
-var Sequelize = require('sequelize');
-var sqlite = require('sqlite3');
+var queryable = require( 'queryable' );
 var fs = require('fs');
+var path = require('path');
 
-// defined db config
-var sequelize = new Sequelize(null, null, null, {
-  dialect: 'sqlite',
-  storage: '../db/cc-cedict.sqlite',
-	logging: false
-});
-
-// create a sqlite database with every entry 
-var Word = sequelize.define('Word', {
-  traditional: Sequelize.STRING,
-  simplified: Sequelize.STRING,
-  pronunciation: Sequelize.STRING,
-  definitions: Sequelize.STRING
-});
-
-// sync up the schema
-sequelize
-  .sync({ force: true })
-  .complete(function(err) {
-     if (!!err) {
-       console.log('An error occurred while creating the table:', err);
-     } else {
-       console.log('It worked!');
-     }
-  });
+var db = queryable.open(path.resolve(__dirname, '../db/cc-cedict.mongo'));
 
 fs.readFile('../src/cc-cedict.txt', 'UTF-8', function(err, data){
-  
-  console.log('dictionary loaded, now executing parser');
-  var lines = data.toString().split('\n');
-  var i = 0;
 
-  var addNextRow = function(){
+	console.log('dictionary loaded, now executing parser');
+	var lines = data.toString().split('\n');
+	var s = 0;
+	var i = 0;
 
-    var line = lines[i];
+	var addNextRow = function(){
 
-    // not a comment
-    if (line[0] !== '#'){
-      var spaceSplit = line.split(' ');
-      var traditional = spaceSplit[0];
-      var simplified = spaceSplit[1];
+		var line = lines[i];
 
-      var regex = /\[(.*?)\]/;
-      var pronunciation = line.match(regex)[0].toLowerCase();
+		// not a comment
+		if (line[0] !== '#' && line !== undefined){
+			var spaceSplit = line.split(' ');
+			var traditional = spaceSplit[0];
+			var simplified = spaceSplit[1];
 
-      var slashSplit = line.split('/');
-      var defs = slashSplit.slice(1, slashSplit.length - 1).join('; ');
+			var regex = /\[(.*?)\]/;
+			var pronunciation = line.match(regex)[0].toLowerCase();
 
-      console.log(pronunciation);
+			var slashSplit = line.split('/');
+			var defs = slashSplit.slice(1, slashSplit.length - 1).join('; ');
 
-      var word = Word.create({
-        traditional: traditional,
-        simplified: simplified,
-        pronunciation: pronunciation,
-        definitions: defs
-      });
-    }
+			db.insert({
+				traditional: traditional,
+				simplified: simplified,
+				pronunciation: pronunciation,
+				definitions: defs
+			});
+		}
 
-    setTimeout(function(){
-      if (i < lines.length){
-        i += 1;
-        addNextRow();
-      } else {
-        return;
-      }
-    }, 50);
-  };
-  addNextRow();
+		setTimeout(function(){
+			if (i < lines.length){
+				i += 1;
+				
+				if (s === 200) { // Prevents the running proccess from using too much memory. Too much being >200mb.
+					db.save();
+					s = 0;
+				} else {
+					s += 1;
+				}
+				
+				addNextRow();
+			} else {
+				return;
+			}
+		}, 1);
+	};
+	addNextRow();
 });
-
