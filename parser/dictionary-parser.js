@@ -9,7 +9,8 @@ var fs = require('fs');
 // defined db config
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
-  storage: '../db/cc-cedict.sqlite'
+  storage: '../db/cc-cedict.sqlite',
+	logging: false
 });
 
 // create a sqlite database with every entry 
@@ -48,7 +49,7 @@ fs.readFile('../src/cc-cedict.txt', 'UTF-8', function(err, data){
       var simplified = spaceSplit[1];
 
       var regex = /\[(.*?)\]/;
-      var pronunciation = line.match(regex)[0];
+      var pronunciation = line.match(regex)[0].toLowerCase();
 
       var slashSplit = line.split('/');
       var defs = slashSplit.slice(1, slashSplit.length - 1).join('; ');

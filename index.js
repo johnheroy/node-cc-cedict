@@ -3,7 +3,8 @@ var path = require('path');
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
-  storage: path.join(__dirname, './db/cc-cedict.sqlite')
+  storage: path.join(__dirname, './db/cc-cedict.sqlite'),
+	logging: false
 });
 
 var Word = sequelize.define('Word', {
@@ -42,7 +43,7 @@ module.exports.searchByChinese = function(str, cb){
       var results = [];
       _.each(words, function(word){
         var pronunciation = word.pronunciation;
-        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
+        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1).replace(/u\:/g, "v"));
         results.push({
           traditional: word.traditional,
           simplified: word.simplified,
@@ -62,10 +63,25 @@ module.exports.searchByPinyin = function(str, cb) {
 	_.each(parts, function(part) {
 		var numeric = part.replace(/\D/g,'');
 		
+		// Convert ü/v to u: as used in dictionary
+		var newPart = [];
+		var umlat = false;
+		_.each(part.split(""), function(char) {
+			if (char === "ü" || char === "v") {
+				newPart.push("u");
+				newPart.push(":");
+				umlat = true;
+			} else {
+				newPart.push(char);
+			}
+		});
+		if (umlat)
+			newStr.push(newPart.join(""));
+		
 		if (numeric === "") {
 			part += "5";
 			newStr.push(part);
-		} else {
+		} else if (!umlat) {
 			newStr.push(part);
 		}
 	});
@@ -77,21 +93,21 @@ module.exports.searchByPinyin = function(str, cb) {
 	};
 	
 	Word
-		.findAll(query)
-		.then(function(words) {
-			var results = [];
-			
-			_.each(words, function(word) {
-				var pronunciation = word.pronunciation;
-			        var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
-			        results.push({
-			          traditional: word.traditional,
-			          simplified: word.simplified,
-			          pronunciation: prettified,
-			          definitions: word.definitions
-			        });
-			});
-			cb(results);
+	.findAll(query)
+	.then(function(words) {
+		var results = [];
+		
+		_.each(words, function(word) {
+			var pronunciation = word.pronunciation;
+						var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1).replace(/u\:/g, "v"));
+		        results.push({
+		          traditional: word.traditional,
+		          simplified: word.simplified,
+		          pronunciation: prettified,
+		          definitions: word.definitions
+		        });
+		});
+		cb(results);
 	});
 }
 
