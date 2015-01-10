@@ -19,14 +19,13 @@ module.exports.searchByChinese = function(str, cb){
   traditional = traditional.join('');
 
   // default search is simplified unless input string is traditional
-  var query = {
-    where: {simplified: simplified}
-  };
+  var query = {simplified: simplified};
+	
   if (traditional === str){
-    query.where = {traditional: traditional};
+    query = {traditional: traditional};
   }
 
-	db.find(query.where, function(result) {
+	db.find(query, function(result) {
 		var results = [];
 		_.each(result.rows, function(word){
 			var pronunciation = word.pronunciation;
