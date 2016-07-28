@@ -6,7 +6,7 @@ var sequelize = new Sequelize(null, null, null, {
   storage: path.join(__dirname, './db/cc-cedict.sqlite')
 });
 
-var Word = sequelize.define('Word', {
+var Word = sequelize.define('word', {
   traditional: Sequelize.STRING,
   simplified: Sequelize.STRING,
   pronunciation: Sequelize.STRING,

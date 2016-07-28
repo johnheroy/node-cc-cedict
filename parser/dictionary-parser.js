@@ -14,7 +14,7 @@ var sequelize = new Sequelize(null, null, null, {
 });
 
 // create a sqlite database with every entry
-var Word = sequelize.define('Word', {
+var Word = sequelize.define('word', {
   traditional: Sequelize.STRING,
   simplified: Sequelize.STRING,
   pronunciation: Sequelize.STRING,
