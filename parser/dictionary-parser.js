@@ -5,14 +5,15 @@
 var Sequelize = require('sequelize');
 var sqlite = require('sqlite3');
 var fs = require('fs');
+var path = require("path");
 
 // defined db config
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
-  storage: '../db/cc-cedict.sqlite'
+  storage: path.join(__dirname, '../db/', 'cc-cedict.sqlite')
 });
 
-// create a sqlite database with every entry 
+// create a sqlite database with every entry
 var Word = sequelize.define('Word', {
   traditional: Sequelize.STRING,
   simplified: Sequelize.STRING,
@@ -23,26 +24,25 @@ var Word = sequelize.define('Word', {
 // sync up the schema
 sequelize
   .sync({ force: true })
-  .complete(function(err) {
-     if (!!err) {
-       console.log('An error occurred while creating the table:', err);
-     } else {
-       console.log('It worked!');
-     }
+  .then(function (err) {
+    if (!!err) {
+      console.log('An error occurred while creating the table:', err);
+    } else {
+      console.log('It worked!');
+    }
   });
 
-fs.readFile('../src/cc-cedict.txt', 'UTF-8', function(err, data){
-  
+fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function (err, data) {
   console.log('dictionary loaded, now executing parser');
   var lines = data.toString().split('\n');
   var i = 0;
 
-  var addNextRow = function(){
+  var addNextRow = function () {
 
     var line = lines[i];
 
     // not a comment
-    if (line[0] !== '#'){
+    if (line[0] !== '#') {
       var spaceSplit = line.split(' ');
       var traditional = spaceSplit[0];
       var simplified = spaceSplit[1];
@@ -63,8 +63,8 @@ fs.readFile('../src/cc-cedict.txt', 'UTF-8', function(err, data){
       });
     }
 
-    setTimeout(function(){
-      if (i < lines.length){
+    setTimeout(function () {
+      if (i < lines.length) {
         i += 1;
         addNextRow();
       } else {
@@ -74,4 +74,3 @@ fs.readFile('../src/cc-cedict.txt', 'UTF-8', function(err, data){
   };
   addNextRow();
 });
-
