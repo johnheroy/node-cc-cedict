@@ -15,30 +15,35 @@ var sequelize = new Sequelize(null, null, null, {
 
 // create a sqlite database with every entry
 var Word = sequelize.define('word', {
-  traditional: Sequelize.STRING,
-  simplified: Sequelize.STRING,
-  pronunciation: Sequelize.STRING,
-  definitions: Sequelize.STRING
+  traditional: {
+    type: Sequelize.STRING
+  },
+  simplified: {
+    type: Sequelize.STRING
+  },
+  pronunciation: {
+    type: Sequelize.STRING
+  },
+  definitions: {
+    type: Sequelize.STRING
+  }
 });
 
 // sync up the schema
 sequelize
-  .sync({ force: true })
-  .then(function (err) {
-    if (!!err) {
-      console.log('An error occurred while creating the table:', err);
-    } else {
-      console.log('It worked!');
-    }
+  .sync({ force: true }) // drop the table if it already exists
+  .then(function () {
+    console.log('It worked!');
+  }, function (err) {
+    console.log('An error occurred while creating the table:', err);
   });
 
 fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function (err, data) {
-  console.log('dictionary loaded, now executing parser');
+  console.log('Dictionary loaded, now executing parser.');
   var lines = data.toString().split('\n');
   var i = 0;
 
   var addNextRow = function () {
-
     var line = lines[i];
 
     // not a comment
@@ -52,8 +57,6 @@ fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function 
 
       var slashSplit = line.split('/');
       var defs = slashSplit.slice(1, slashSplit.length - 1).join('; ');
-
-      console.log(pronunciation);
 
       var word = Word.create({
         traditional: traditional,
