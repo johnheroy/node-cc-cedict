@@ -1,5 +1,5 @@
 // I used this script to generate ../db/cc-cedict.sqlite
-// CC-CEDICT version as of October 6, 2014
+// CC-CEDICT version as of July 26, 2016
 // see ../src/cc-cedict.txt for more details
 
 var Sequelize = require('sequelize');
