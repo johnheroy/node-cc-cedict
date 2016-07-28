@@ -2,18 +2,19 @@
 // CC-CEDICT version as of July 26, 2016
 // see ../src/cc-cedict.txt for more details
 
-var Sequelize = require('sequelize');
-var sqlite = require('sqlite3');
+"use strict";
+
 var fs = require('fs');
 var path = require("path");
+var Sequelize = require('sequelize');
 
-// defined db config
+// define db config
 var sequelize = new Sequelize(null, null, null, {
   dialect: 'sqlite',
   storage: path.join(__dirname, '../db/', 'cc-cedict.sqlite')
 });
 
-// create a sqlite database with every entry
+// define model
 var Word = sequelize.define('word', {
   traditional: {
     type: Sequelize.STRING
@@ -40,6 +41,7 @@ sequelize
 
 fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function (err, data) {
   console.log('Dictionary loaded, now executing parser.');
+
   var lines = data.toString().split('\n');
   var i = 0;
 
@@ -47,7 +49,7 @@ fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function 
     var line = lines[i];
 
     // not a comment
-    if (line[0] !== '#') {
+    if (line && line[0] !== '#') {
       var spaceSplit = line.split(' ');
       var traditional = spaceSplit[0];
       var simplified = spaceSplit[1];
@@ -58,7 +60,8 @@ fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function 
       var slashSplit = line.split('/');
       var defs = slashSplit.slice(1, slashSplit.length - 1).join('; ');
 
-      var word = Word.create({
+      // create a sqlite database entry for each line
+      Word.create({
         traditional: traditional,
         simplified: simplified,
         pronunciation: pronunciation,
