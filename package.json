@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/johnheroy/node-cc-cedict",
   "devDependencies": {
-    "mocha": "^2.5.3"
+    "mocha": "^2.5.3",
+    "chai": "^3.5.0"
   },
   "dependencies": {
     "cn-chars": "^0.1.1",
