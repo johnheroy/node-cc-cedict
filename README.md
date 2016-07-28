@@ -17,7 +17,7 @@ cedict.searchByChinese('世界', function(words){
 
 ## Testing
 
-To run tests, run `mocha test/test.js`
+To run tests, run `npm test`.
 
 ## License
 
