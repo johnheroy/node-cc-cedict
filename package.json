@@ -14,10 +14,10 @@
     "url": "https://github.com/johnheroy/node-cc-cedict.git"
   },
   "keywords": [
-    "Chinese",
-    "English",
-    "Translation",
-    "Dictionary"
+    "chinese",
+    "english",
+    "translation",
+    "dictionary"
   ],
   "author": "John Heroy <johnheroy@gmail.com> (http://johnheroy.com/)",
   "license": "MIT",
