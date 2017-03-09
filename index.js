@@ -26,7 +26,7 @@ var Word = sequelize.define('word', {
   }
 });
 
-module.exports.searchByChinese = function (str, cb) {
+module.exports.searchByChinese = function(str, cb){
   var simplified = str.slice().split('');
   var traditional = str.slice().split('');
 
@@ -51,10 +51,10 @@ module.exports.searchByChinese = function (str, cb) {
 
   Word
     .findAll(query)
-    .then(function (words) {
+    .then(function(words){
       var results = [];
 
-      _.each(words, function (word) {
+      _.each(words, function(word){
         var pronunciation = word.pronunciation;
         var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
 
@@ -71,12 +71,12 @@ module.exports.searchByChinese = function (str, cb) {
   ;
 };
 
-module.exports.searchByPinyin = function (str, cb) {
+module.exports.searchByPinyin = function(str, cb){
   // Catches dead-tones or 5th tone
   var parts = str.split(" ");
   var newStr = [];
 
-  _.each(parts, function (part) {
+  _.each(parts, function(part){
     var numeric = part.replace(/\D/g,'');
 
     if (numeric === "") {
@@ -97,10 +97,10 @@ module.exports.searchByPinyin = function (str, cb) {
 
   Word
     .findAll(query)
-    .then(function (words) {
+    .then(function(words){
       var results = [];
 
-      _.each(words, function (word) {
+      _.each(words, function(word){
         var pronunciation = word.pronunciation;
         var prettified = pinyin.prettify(pronunciation.slice(1, pronunciation.length - 1));
 
@@ -117,6 +117,6 @@ module.exports.searchByPinyin = function (str, cb) {
   ;
 };
 
-module.exports.searchByEnglish = function (str, cb) {
+module.exports.searchByEnglish = function(str, cb){
   // TODO
 };

@@ -9,7 +9,7 @@ Single search method defaults to traditional if the entire word provided is in t
 ```
 var cedict = require('node-cc-cedict');
 
-cedict.searchByChinese('世界', function (words) {
+cedict.searchByChinese('世界', function(words){
   console.log(words);
 });
 

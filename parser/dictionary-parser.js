@@ -33,19 +33,19 @@ var Word = sequelize.define('word', {
 // sync up the schema
 sequelize
   .sync({ force: true }) // drop the table if it already exists
-  .then(function () {
+  .then(function(){
     console.log('It worked!');
-  }, function (err) {
+  }, function(err){
     console.log('An error occurred while creating the table:', err);
   });
 
-fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function (err, data) {
+fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function(err, data){
   console.log('Dictionary loaded, now executing parser.');
 
   var lines = data.toString().split('\n');
   var i = 0;
 
-  var addNextRow = function () {
+  var addNextRow = function(){
     var line = lines[i];
 
     // not a comment
@@ -69,7 +69,7 @@ fs.readFile(path.join(__dirname, '../src/', 'cc-cedict.txt'), 'UTF-8', function 
       });
     }
 
-    setTimeout(function () {
+    setTimeout(function(){
       if (i < lines.length) {
         i += 1;
         addNextRow();
